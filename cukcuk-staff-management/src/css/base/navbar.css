@@ -1,0 +1,62 @@
+.navbar-header {
+    width: 226px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+    border-right: 1px solid #e5e5e5;
+}
+
+.menu-button {
+    width: 24px;
+}
+
+.menu-button:hover {
+    cursor: pointer;
+}
+
+.cukcuk-logo {
+    height: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.navbar-menu {
+    width: 226px;
+    border-right: 1px solid #e5e5e5;
+    height: calc(100vh - 50px);
+}
+
+.navbar-menu-item {
+    padding-left: 12px;
+    display: flex;
+    align-items: center;
+    height: 44px;
+}
+
+.navbar-menu-item:hover {
+    background-color: #e5e5e5;
+    cursor: pointer;
+}
+
+.navbar-menu-item.active {
+    background-color: #01b075;
+    color: #ffffff;
+}
+
+.navbar-menu-item:active {
+    background-color: #ffffff;
+}
+
+.navbar-menu-item.active:hover {
+    background-color: #2fbe8e;
+}
+
+.navbar-menu-item.active:active {
+    background-color: #01b075;
+}
+
+.navbar-menu-item img {
+    height: 24px;
+    margin-right: 10px;
+}
