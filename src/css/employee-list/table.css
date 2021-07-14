@@ -1,0 +1,89 @@
+.table-container {
+    width: calc(100% - 24px);
+    height: calc(100vh - 224px);
+    overflow: scroll;
+    margin-top: 16px;
+    margin-left: 12px;
+}
+
+.my-table {
+    background-color: #ffffff;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.my-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.my-table td, th {
+    padding: 10px 16px;
+    border-bottom: 1px solid #bbbbbb;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+th {
+    background-color: #ffffff;
+}
+
+.tr-active td {
+    background-color: #EBF4FF;
+}
+
+tr:hover {
+    background-color: #e5e5e5;
+    cursor: pointer;
+}
+
+tr:nth-child(odd) {
+    background-color: #E9EBEE;
+}
+
+tr>*:nth-child(1) {
+    width: 70px;
+}
+
+tr>*:nth-child(2) {
+    width: 150px;
+}
+
+tr>*:nth-child(3) {
+    width: 45px;
+}
+
+tr>*:nth-child(4) {
+    width: 65px;
+}
+
+tr>*:nth-child(5) {
+    width: 80px;
+}
+
+tr>*:nth-child(6) {
+    width: 165px;
+}
+
+tr>*:nth-child(7) {
+    width: 120px;
+}
+
+tr>*:nth-child(8) {
+    width: 90px;
+}
+
+tr>*:nth-child(9) {
+    width: 65px;
+}
+
+tr>*:nth-child(10) {
+    width: 130px;
+}
+
+td:nth-child(9), th:nth-child(9) {
+    text-align: right;
+}

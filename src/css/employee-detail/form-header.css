@@ -1,0 +1,27 @@
+.form-header {
+  height: 72px;
+  padding-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-header .cancel-button {
+  width: 36px;
+  height: 36px;
+  border-top-right-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.form-title {
+  margin-left: 24px;
+  font-family: GoogleSans-Regular;
+  font-size: 28px;
+  margin-top: 48px;
+}
+
+.form-body {
+  display: flex;
+  height: calc(100% - 150px);
+}
