@@ -15,6 +15,9 @@ export default {
     Modal,
     FormContent,
   },
+  props: {
+    isShown: Boolean,
+  },
 };
 </script>
 <style scoped>

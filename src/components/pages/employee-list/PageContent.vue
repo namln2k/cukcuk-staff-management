@@ -1,9 +1,9 @@
 <template>
   <div class="content" id="content">
-    <ContentHeader @showBlankForm="this.$emit('showForm', employeeId)"></ContentHeader>
-    <SearchModule></SearchModule>
-    <ContentTable></ContentTable>
-    <TablePagination></TablePagination>
+    <ContentHeader />
+    <SearchModule />
+    <ContentTable />
+    <TablePagination />
   </div>
 </template>
 <script>

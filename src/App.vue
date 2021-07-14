@@ -1,10 +1,10 @@
 <template>
   <div id="app">
-    <TheNavbarHeader></TheNavbarHeader>
-    <TheNavbarMenu></TheNavbarMenu>
-    <ThePageHeader></ThePageHeader>
-    <PageContent @showForm="showBlankForm(employeeId)"></PageContent>
-    <EmployeeForm></EmployeeForm>
+    <TheNavbarHeader />
+    <TheNavbarMenu />
+    <ThePageHeader />
+    <PageContent />
+    <EmployeeForm />
   </div>
 </template>
 
@@ -25,13 +25,16 @@ export default {
     EmployeeForm,
   },
   methods: {
-    showBlankForm(employeeId) {
-      console.log(employeeId);
-    },
   },
+  mounted() {
+    this.$root.$on("showEmployeeForm", function() {
+      // EmployeeForm.isShown = true;
+    });
+  }
 };
 </script>
 
 <style>
+@import "./libs/bootstrap/bootstrap.min.css";
 @import "./css/common/main.css";
 </style>

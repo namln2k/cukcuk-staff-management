@@ -40,16 +40,12 @@ tr:hover {
     cursor: pointer;
 }
 
-tr:nth-child(odd) {
-    background-color: #E9EBEE;
-}
-
 tr>*:nth-child(1) {
-    width: 70px;
+    width: 63px;
 }
 
 tr>*:nth-child(2) {
-    width: 150px;
+    width: 94px;
 }
 
 tr>*:nth-child(3) {
@@ -57,31 +53,43 @@ tr>*:nth-child(3) {
 }
 
 tr>*:nth-child(4) {
-    width: 65px;
+    width: 60px;
 }
 
 tr>*:nth-child(5) {
-    width: 80px;
+    width: 72px;
 }
 
 tr>*:nth-child(6) {
-    width: 165px;
+    width: 132px;
 }
 
 tr>*:nth-child(7) {
-    width: 120px;
+    width: 94px;
 }
 
 tr>*:nth-child(8) {
-    width: 90px;
+    width: 82px;
 }
 
 tr>*:nth-child(9) {
-    width: 65px;
+    width: 90px;
 }
 
 tr>*:nth-child(10) {
     width: 130px;
+}
+
+td:nth-child(9) {
+    text-align: right;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #FFFFFF;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #E9EBEE;
 }
 
 td:nth-child(9), th:nth-child(9) {

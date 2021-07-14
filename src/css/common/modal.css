@@ -4,7 +4,6 @@
     left: 0;
     top: 0;
     position: fixed;
-    /* display: none; */
     background-color: rgba(0, 0, 0, 0.5);
     overflow: auto;
 }

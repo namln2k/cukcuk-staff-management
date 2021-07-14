@@ -14,41 +14,57 @@
           <th>Mức lương cơ bản</th>
           <th>Tình trạng công việc</th>
         </tr>
-        <tr>
-          <td>NV-023567</td>
-          <td>Lê Nhật Nam</td>
-          <td>Nam</td>
-          <td>02-08-2000</td>
-          <td>0982224444</td>
-          <td>lnnam.fresher.misa@gmail.com</td>
-          <td>Fresher</td>
-          <td>Phòng đào tạo</td>
-          <td>3000000</td>
-          <td>Đang làm</td>
-        </tr>
-        <tr>
-          <td>NV-023567</td>
-          <td>Lê Nhật Nam</td>
-          <td>Nam</td>
-          <td>02-08-2000</td>
-          <td>0982224444</td>
-          <td>lnnam.fresher.misa@gmail.com</td>
-          <td>Fresher</td>
-          <td>Phòng đào tạo</td>
-          <td>3000000</td>
-          <td>Đang làm</td>
-        </tr>
       </thead>
-      <tbody></tbody>
+      <tbody>
+          <tr v-for="employee in employees" :key="employee.EmployeeId">
+            <td>{{employee.EmployeeCode}}</td>
+            <td>{{employee.FullName}}</td>
+            <td>{{employee.GenderName}}</td>
+            <td>{{employee.DateOfBirth}}</td>
+            <td>{{employee.PhoneNumber}}</td>
+            <td>{{employee.Email}}</td>
+            <td>{{employee.PositionName}}</td>
+            <td>{{employee.DepartmentName}}</td>
+            <td>{{employee.Salary}}</td>
+            <td>{{employee.WorkStatus}}</td>
+          </tr>
+      </tbody>
     </table>
   </div>
 </template>
 <script>
+import axios from "axios";
+import dayjs from "dayjs";
 export default {
   name: "ContentTable",
+  props: {
+
+  },
+  created() {
+    let me = this;
+    axios.get("http://cukcuk.manhnv.net/v1/Employees/").then((response) => {
+      response.data.forEach((value) => {
+        value.DateOfBirth = dayjs(value.DateOfBirth).format('DD-MM-YYYY');
+        if (value.DateOfBirth == "Invalid Date") {
+          value.DateOfBirth = "Không xác định";
+        }
+        if (value.Salary)
+          value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
+        
+        me.employees.push(value);
+      })
+    })
+  },
+  methods: {
+
+  },
+  data() {
+    return {
+      employees: [],
+    };
+  }
 };
 </script>
 <style scoped>
-@import "../../../libs/bootstrap/bootstrap.min.css";
 @import "../../../css/employee-list/table.css";
 </style>

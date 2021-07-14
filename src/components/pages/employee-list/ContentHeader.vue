@@ -4,7 +4,7 @@
       <div class="table-name">Danh sách nhân viên</div>
     </div>
     <div class="content-item-right">
-      <IconButton icon="add.png" text="Thêm nhân viên" @click="showNewForm(null)"></IconButton>
+      <IconButton icon="add.png" text="Thêm nhân viên" @click.native="showForm()" />
     </div>
   </div>
 </template>
@@ -16,8 +16,8 @@ export default {
     IconButton,
   },
   methods: {
-    showNewForm(employeeId) {
-      this.$emit('showBlankForm', employeeId);
+    showForm: function() {
+      this.$root.$emit("showEmployeeForm", null);
     }
   }
 };
