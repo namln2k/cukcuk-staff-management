@@ -1,24 +1,18 @@
 <template>
-  <div class="form-hidden">
-    <Modal>
-      <FormContent></FormContent>
-    </Modal>
-  </div>
+  <transition class="modal">
+  
+  </transition>
 </template>
 <script>
-import Modal from "../../common/Modal.vue";
-import FormContent from "./FormContent.vue";
+// import FormContent from "./FormContent.vue";
 
 export default {
   name: "EmployeeForm",
-  components: {
-    Modal,
-    FormContent,
-  },
-  props: {
-    isShown: Boolean,
-  },
+  // components: {
+  //   FormContent,
+  // },
 };
 </script>
 <style scoped>
+@import "../../../css/common/modal.css";
 </style>

@@ -10,14 +10,15 @@
 </template>
 <script>
 import IconButton from "../../common/IconButton.vue";
+import {EventBus} from "@/js/EventBus";
 export default {
   name: "ContentHeader",
   components: {
     IconButton,
   },
   methods: {
-    showForm: function() {
-      this.$root.$emit("showEmployeeForm", null);
+    showForm() {
+      EventBus.$emit("showEmployeeForm", null);
     }
   }
 };

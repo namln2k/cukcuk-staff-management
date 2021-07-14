@@ -19,3 +19,6 @@ export default {
   },
 };
 </script>
+<style>
+@import "../../../css/employee-detail/form-content.css"
+</style>
