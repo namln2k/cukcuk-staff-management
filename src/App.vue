@@ -4,7 +4,10 @@
     <TheNavbarMenu></TheNavbarMenu>
     <ThePageHeader></ThePageHeader>
     <PageContent></PageContent>
-    <EmployeeForm :class="isFormShown ? 'is-displayed' : ''"></EmployeeForm>
+    <EmployeeForm
+      :employeeId="employeeId"
+      :class="isFormShown ? 'is-displayed' : ''"
+    ></EmployeeForm>
   </div>
 </template>
 
@@ -29,13 +32,13 @@ export default {
   data() {
     return {
       isFormShown: false,
+      employeeId: null,
     };
   },
   mounted() {
     EventBus.$on("showForm", (employeeId) => {
-      if (!employeeId) {
-        this.isFormShown = true;
-      }
+      this.employeeId = employeeId;
+      this.isFormShown = true;
     });
     EventBus.$on("closeForm", () => {
       this.isFormShown = false;

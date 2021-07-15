@@ -2,6 +2,7 @@
   <div v-bind:class="{ open: openSuggestion }">
     <div>{{ inputLabel }}</div>
     <input
+      :id="id"
       class="info-uniform combobox-input"
       :class="isValidate ? '' : 'red-border'"
       type="text"
@@ -110,6 +111,21 @@ export default {
       this.open = false;
     },
   },
+  // created() {
+  //   let me = this;
+  //   axios.get("http://cukcuk.manhnv.net/v1/Employees/").then((response) => {
+  //     response.data.forEach((value) => {
+  //       value.DateOfBirth = dayjs(value.DateOfBirth).format("DD-MM-YYYY");
+  //       if (value.DateOfBirth == "Invalid Date") {
+  //         value.DateOfBirth = "Không xác định";
+  //       }
+  //       if (value.Salary)
+  //         value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
+
+  //       me.employees.push(value);
+  //     });
+  //   });
+  // },
 };
 </script>
 <style scoped>

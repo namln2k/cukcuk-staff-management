@@ -7,7 +7,7 @@
         .jpg, .jpeg, .png, .gif.)
       </div>
     </div>
-    <BodyRight></BodyRight>
+    <BodyRight :employeeId="employeeId"></BodyRight>
   </div>
 </template>
 <script>
@@ -17,6 +17,9 @@ export default {
   name: "FormBody",
   components: {
     BodyRight,
+  },
+  props: {
+    employeeId: String,
   }
 }
 </script>

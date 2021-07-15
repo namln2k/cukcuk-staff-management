@@ -1,7 +1,7 @@
 <template>
   <div class="form-content">
     <FormHeader></FormHeader>
-    <FormBody></FormBody>
+    <FormBody :employeeId="employeeId"></FormBody>
     <FormFooter></FormFooter>
   </div>
 </template>
@@ -17,6 +17,9 @@ export default {
     FormBody,
     FormFooter,
   },
+  props: {
+    employeeId: String,
+  }
 };
 </script>
 <style>

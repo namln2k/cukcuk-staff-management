@@ -7,7 +7,7 @@
           id="employee-code"
           inputLabel="Mã nhân viên"
           required
-        ></TextInput>
+        ></TextInput> 
       </div>
       <div class="info-field-part">
         <TextInput
@@ -116,6 +116,14 @@ export default {
     DateInput,
     AutoComplete,
   },
+  props: {
+    employeeId: String,
+  },
+  methods: {
+    changeSelection(currentSelection) {
+      this.genderSelected = currentSelection;
+    },
+  },
   data() {
     return {
       genderSelected: "",
@@ -143,11 +151,6 @@ export default {
         { text: "Không xác định", value: 2 },
       ],
     };
-  },
-  methods: {
-    changeSelection(currentSelection) {
-      this.genderSelected = currentSelection;
-    },
   },
 };
 </script>
