@@ -1,6 +1,5 @@
 .form-header {
   height: 72px;
-  padding-bottom: 4px;
   display: flex;
   justify-content: space-between;
 }
@@ -18,7 +17,7 @@
   margin-left: 24px;
   font-family: GoogleSans-Regular;
   font-size: 28px;
-  margin-top: 48px;
+  margin-top: 36px;
 }
 
 .form-body {

@@ -1,16 +1,16 @@
 <template>
-  <transition class="modal">
-  
-  </transition>
+  <div class="modal-background">
+    <FormContent></FormContent>
+  </div>
 </template>
 <script>
-// import FormContent from "./FormContent.vue";
+import FormContent from "./FormContent.vue";
 
 export default {
   name: "EmployeeForm",
-  // components: {
-  //   FormContent,
-  // },
+  components: {
+    FormContent,
+  },
 };
 </script>
 <style scoped>

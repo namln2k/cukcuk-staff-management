@@ -18,7 +18,7 @@ export default {
   },
   methods: {
     showForm() {
-      EventBus.$emit("showEmployeeForm", null);
+      EventBus.$emit("showForm", null);
     }
   }
 };

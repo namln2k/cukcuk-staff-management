@@ -1,20 +1,21 @@
 <template>
   <div id="app">
-    <EmployeeForm v-show="isFormShown"></EmployeeForm>
     <TheNavbarHeader></TheNavbarHeader>
     <TheNavbarMenu></TheNavbarMenu>
     <ThePageHeader></ThePageHeader>
     <PageContent></PageContent>
+    <EmployeeForm :class="isFormShown ? 'is-displayed' : ''"></EmployeeForm>
   </div>
 </template>
 
 <script>
-import EmployeeForm from "./components/pages/employee-detail/EmployeeForm.vue";
 import TheNavbarHeader from "./components/base/TheNavbarHeader.vue";
 import TheNavbarMenu from "./components/base/TheNavbarMenu.vue";
 import ThePageHeader from "./components/base/ThePageHeader.vue";
 import PageContent from "./components/pages/employee-list/PageContent.vue";
-import {EventBus} from "@/js/EventBus";
+import EmployeeForm from "./components/pages/employee-detail/EmployeeForm.vue";
+import { EventBus } from "@/js/EventBus";
+
 export default {
   name: "App",
   components: {
@@ -24,21 +25,22 @@ export default {
     ThePageHeader,
     PageContent,
   },
-  methods: {
-    
-  },
+  methods: {},
   data() {
     return {
       isFormShown: false,
     };
   },
   mounted() {
-    EventBus.$on("showEmployeeForm", employeeId => {
+    EventBus.$on("showForm", (employeeId) => {
       if (!employeeId) {
         this.isFormShown = true;
       }
     });
-  }
+    EventBus.$on("closeForm", () => {
+      this.isFormShown = false;
+    });
+  },
 };
 </script>
 

@@ -1,5 +1,6 @@
 .form-content {
     width: calc(50% - 24px);
+    height: calc(100% - 26px);
     margin-top: 12px;
     margin-left: auto;
     margin-right: auto;
@@ -8,4 +9,5 @@
     flex-direction: column;
     justify-content: space-between;
     background-color: #ffffff;
+    z-index: 100;
 }

@@ -1,14 +1,23 @@
 <template>
   <div class="form-footer">
-    <div class="cancel-button" id="button-delete">Del</div>
-    <div class="cancel-button" id="button-cancel">Hủy</div>
-    <div class="button-save" id="button-save">
-      <img class="button-icon" src="resources/icons/save.png" />
-      Lưu
-    </div>
+    <div class="cancel-button" id="button-cancel" @click="closeForm()">Hủy</div>
+    <IconButton icon="add.png" text="Lưu" />
   </div>
 </template>
 <script>
+import IconButton from "../../../components/common/IconButton.vue";
+import {EventBus} from "@/js/EventBus";
+export default {
+  name: "FormFooter",
+  components: {
+    IconButton,
+  },
+  methods: {
+    closeForm() {
+      EventBus.$emit("closeForm");
+    },
+  }
+}
 </script>
 <style scoped>
 @import "../../../css/employee-detail/form-footer.css";
