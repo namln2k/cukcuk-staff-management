@@ -35,15 +35,3 @@
     width: calc(50% - 12px);
     margin-right: 12px;
 }
-
-.info-uniform {
-    border: 1px solid #bbbbbb;
-    border-radius: 4px;
-    padding-left: 10px;
-    font-family: GoogleSans-Regular;
-}
-
-.info-uniform:focus {
-    outline: none;
-    border: 1px solid #01b075;
-}

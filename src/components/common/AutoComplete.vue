@@ -1,19 +1,22 @@
 <template>
   <div v-bind:class="{ open: openSuggestion }">
     <div>{{ inputLabel }}</div>
-    <input
-      :id="id"
-      class="info-uniform combobox-input"
-      :class="isValidate ? '' : 'red-border'"
-      type="text"
-      :value="value"
-      @click="updateValue($event.target.value)"
-      @input="updateValue($event.target.value)"
-      @blur="onBlur"
-      @keydown.enter="enter"
-      @keydown.down="down"
-      @keydown.up="up"
-    />
+    <div class="input-wrapper" :class="isValidate ? '' : 'border-red'">
+      <input
+        :id="id"
+        class="info-uniform combobox-input"
+        
+        type="text"
+        :value="value"
+        @click="updateValue($event.target.value)"
+        @input="updateValue($event.target.value)"
+        @blur="onBlur"
+        @keydown.enter="enter"
+        @keydown.down="down"
+        @keydown.up="up"
+      />
+      <div class="arrow-button" @mousedown="openAllSuggestion()">V</div>
+    </div>
     <div class="options">
       <div
         class="option"
@@ -76,7 +79,11 @@ export default {
         this.open = true;
         this.current = 0;
       }
-      if (this.suggestions.some((e) => e.text.toLocaleUpperCase().includes(value.toLocaleUpperCase()))) {
+      if (
+        this.suggestions.some((e) =>
+          e.text.toLocaleUpperCase().includes(value.toLocaleUpperCase())
+        )
+      ) {
         this.isValidate = true;
       } else {
         this.isValidate = false;
@@ -110,6 +117,11 @@ export default {
       this.$emit("input", this.matches[index].text);
       this.open = false;
     },
+    openAllSuggestion() {
+      this.matches = this.suggestions;
+      console.log(this.matches);
+      this.open = true;
+    }
   },
   // created() {
   //   let me = this;
@@ -129,4 +141,5 @@ export default {
 };
 </script>
 <style scoped>
+@import "../../css/common/info-input.css";
 </style>

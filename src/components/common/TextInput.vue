@@ -8,9 +8,9 @@
       type="text"
       :id="id"
       class="info-uniform text-input"
-      :class="{'redborder' : !isValidate}"
+      :class="{'border-red' : !isValidate}"
       @input="validate($event)"
-      @click="validate($event)"
+      @blur="validate($event)"
       tabindex="1"
     />
   </div>
