@@ -8,10 +8,11 @@
       type="text"
       :id="id"
       class="info-uniform text-input"
-      :class="{'border-red' : !isValidate}"
+      :class="{ 'border-red': !isValidate }"
       @input="validate($event)"
       @blur="validate($event)"
       tabindex="1"
+      :value="text"
     />
   </div>
 </template>
@@ -22,11 +23,13 @@ export default {
     id: String,
     inputLabel: String,
     required: Boolean,
+    text: String,
   },
   methods: {
     validate(event) {
       if (this.required) {
-        this.isValidate = (event.target.value != "") && (event.target.value != null);
+        this.isValidate =
+          event.target.value != "" && event.target.value != null;
       }
     },
   },

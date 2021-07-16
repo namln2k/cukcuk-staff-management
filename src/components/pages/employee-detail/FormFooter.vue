@@ -1,7 +1,7 @@
 <template>
   <div class="form-footer">
     <div class="cancel-button" id="button-cancel" @click="closeForm()">Hủy</div>
-    <IconButton icon="add.png" text="Lưu" />
+    <IconButton icon="add.png" text="Lưu" @click.native="saveForm()"/>
   </div>
 </template>
 <script>
@@ -16,6 +16,9 @@ export default {
     closeForm() {
       EventBus.$emit("closeForm");
     },
+    saveForm() {
+      EventBus.$emit("saveForm");
+    }
   }
 }
 </script>

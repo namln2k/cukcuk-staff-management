@@ -5,8 +5,8 @@
       <input
         :id="id"
         class="info-uniform combobox-input"
-        
         type="text"
+        autocomplete="none"
         :value="value"
         @click="updateValue($event.target.value)"
         @input="updateValue($event.target.value)"
@@ -14,8 +14,9 @@
         @keydown.enter="enter"
         @keydown.down="down"
         @keydown.up="up"
+        tabindex="1"
       />
-      <div class="arrow-button" @mousedown="openAllSuggestion()">V</div>
+      <!-- <div class="arrow-button" @mousedown="openAllSuggestion()">V</div> -->
     </div>
     <div class="options">
       <div
@@ -119,7 +120,6 @@ export default {
     },
     openAllSuggestion() {
       this.matches = this.suggestions;
-      console.log(this.matches);
       this.open = true;
     }
   },

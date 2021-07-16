@@ -20,7 +20,8 @@
           v-for="employee in employees"
           :key="employee.EmployeeId"
           @click="getSelectedRow(employee.EmployeeId)"
-          :class="{'tr-active': (employee.EmployeeId == selectedId)}"
+          @dblclick="showEmployeeDetail(employee.EmployeeId)"
+          :class="{ 'tr-active': employee.EmployeeId == selectedId }"
         >
           <td>{{ employee.EmployeeCode }}</td>
           <td>{{ employee.FullName }}</td>
@@ -40,6 +41,8 @@
 <script>
 import axios from "axios";
 import dayjs from "dayjs";
+import {EventBus} from "@/js/EventBus.js"
+
 export default {
   name: "ContentTable",
   props: {},
@@ -51,9 +54,12 @@ export default {
         if (value.DateOfBirth == "Invalid Date") {
           value.DateOfBirth = "Không xác định";
         }
+        value.joinDate = dayjs(value.joinDate).format("DD-MM-YYYY");
+        if (value.joinDate == "Invalid Date") {
+          value.joinDate = "Không xác định";
+        }
         if (value.Salary)
           value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
-
         me.employees.push(value);
       });
     });
@@ -62,7 +68,10 @@ export default {
     getSelectedRow(employeeId) {
       this.selectedId = employeeId;
     },
-  
+    showEmployeeDetail(employeeId) {
+      this.selectedId = employeeId;
+      EventBus.$emit("showForm", employeeId);
+    },
   },
   data() {
     return {

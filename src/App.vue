@@ -5,7 +5,6 @@
     <ThePageHeader></ThePageHeader>
     <PageContent></PageContent>
     <EmployeeForm
-      :employeeId="employeeId"
       :class="isFormShown ? 'is-displayed' : ''"
     ></EmployeeForm>
   </div>
@@ -36,8 +35,7 @@ export default {
     };
   },
   mounted() {
-    EventBus.$on("showForm", (employeeId) => {
-      this.employeeId = employeeId;
+    EventBus.$on("showForm", () => {
       this.isFormShown = true;
     });
     EventBus.$on("closeForm", () => {

@@ -1,6 +1,6 @@
 <template>
   <div class="modal-background">
-    <FormContent :employeeId="employeeId"></FormContent>
+    <FormContent></FormContent>
   </div>
 </template>
 <script>
@@ -11,9 +11,6 @@ export default {
   components: {
     FormContent,
   },
-  props: {
-    employeeId: String,
-  }
 };
 </script>
 <style scoped>

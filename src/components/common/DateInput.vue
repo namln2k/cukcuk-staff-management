@@ -9,6 +9,8 @@
       :id="id"
       class="info-uniform date-input"
       tabindex="1"
+      autocomplete="none"
+      :value="text"
     />
   </div>
 </template>
@@ -19,6 +21,7 @@ export default {
     inputLabel: String,
     required: Boolean,
     id: String,
+    text: String,
   },
 };
 </script>
