@@ -1,7 +1,11 @@
 <template>
   <div v-bind:class="{ open: openOptions }">
     <div>{{ inputLabel }}</div>
-    <div class="input-wrapper" :class="isValidate ? '' : 'border-red'">
+    <div
+      ref="input-wrapper"
+      class="input-wrapper"
+      :class="{ 'border-red': !isValidate, 'border-green': isFocus }"
+    >
       <input
         :id="id"
         class="info-uniform combobox-input"
@@ -9,7 +13,7 @@
         autocomplete="none"
         :value="value"
         :text="text"
-        @click="updateValue($event.target.value)"
+        @focus="updateValue($event.target.value)"
         @input="updateValue($event.target.value)"
         @blur="onBlur"
         @keydown.enter="enter"
@@ -17,17 +21,14 @@
         @keydown.up="up"
         tabindex="1"
       />
-      <div class="arrow-button">
-        <font-awesome-icon
-          icon="chevron-down"
-          @click="toggleArrow($event)"
-        />
+      <div class="arrow-button" :class="{ 'open': showAll }" @click="showAll = true">
+        <font-awesome-icon icon="chevron-down" />
       </div>
     </div>
     <div class="options">
       <div
         class="option"
-        v-for="(options, index) in matches"
+        v-for="(option, index) in matches"
         :key="index"
         v-bind:class="{ active: isActive(index) }"
         @mousedown="onOptionClicked(index)"
@@ -44,8 +45,9 @@ export default {
   data() {
     return {
       open: false,
-      current: 0,
+      current: -1,
       isValidate: true,
+      isFocus: false,
       showAll: false,
     };
   },
@@ -69,11 +71,11 @@ export default {
     matches() {
       if (!this.showAll) {
         return this.options.filter((obj) => {
-          if (this.text != null && this.text != "") {
+          if (this.value != null && this.value != "") {
             return (
               obj.text
                 .toLocaleUpperCase()
-                .indexOf(this.text.toLocaleUpperCase()) > -1
+                .indexOf(this.value.toLocaleUpperCase()) > -1
             );
           } else {
             return this.options;
@@ -84,17 +86,16 @@ export default {
       }
     },
     openOptions() {
-      return (
-        this.selection !== "" && this.matches.length !== 0 && this.open === true
-      );
+      return this.matches.length !== 0 && this.open === true;
     },
   },
   methods: {
     updateValue(text) {
       this.showAll = false;
-      if (this.open === false) {
+      this.isFocus = true;
+      if (this.open == false) {
         this.open = true;
-        this.current = 0;
+        this.current = -1;
       }
       if (
         this.options.some((e) =>
@@ -108,14 +109,19 @@ export default {
       this.$emit("input", text);
     },
     onBlur() {
-      if (!this.options.some((e) => e.text === this.text)) {
+      if (this.value == "") {
+        this.isValidate = true;
+      } else if (!this.options.some((e) => e.text == this.value)) {
         this.isValidate = false;
       }
+      this.isFocus = false;
       this.open = false;
+      this.showAll = false;
     },
     enter() {
       this.$emit("input", this.matches[this.current].text);
       this.open = false;
+      this.showAll = false;
     },
     up() {
       if (this.current > 0) {
@@ -132,13 +138,19 @@ export default {
     },
     onOptionClicked(index) {
       this.$emit("input", this.matches[index].text);
+      this.current = index;
       this.open = false;
+      this.showAll = false;
     },
-    toggleArrow(event) {
-      this.showAll = true;
-      event.target.closest("svg").classList.toggle("open");
-      this.open = !this.open;
-    },
+  },
+  created() {
+    document.addEventListener("click", (event) => {
+      let target = event.target;
+      let inputWrapper = this.$refs["input-wrapper"];
+      if (!inputWrapper.contains(target)) {
+        this.onBlur();
+      }
+    });
   },
 };
 </script>

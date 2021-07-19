@@ -298,8 +298,6 @@ export default {
             if (!this.workStatusText) {
               this.workStatusValue = "";
               this.workStatusText = "";
-            } else {
-              this.workStatusSelected = this.workStatusSelected.toString();
             }
           });
       }

@@ -1,9 +1,9 @@
 .table-container {
     width: calc(100% - 24px);
-    height: calc(100vh - 226px);
+    height: calc(100vh - 230px);
     overflow: scroll;
     position: absolute;
-    top: 113px;
+    top: 120px;
     left: 12px;
 }
 

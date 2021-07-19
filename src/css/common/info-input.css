@@ -13,18 +13,18 @@
 
 .info-uniform.text-input {
     width: 100%;
-    height: 42px;
+    height: 40px;
 }
 
 .info-uniform.date-input {
     width: 100%;
-    height: 42px;
+    height: 40px;
 }
 
 .info-uniform.combobox-input {
     border: none;
     width: 100%;
-    height: 42px;
+    height: 40px;
 }
 
 .options {
@@ -90,6 +90,10 @@
     color: #fff;
 }
 
+.border-green {
+    border-color: #01b075 !important;
+}
+
 .border-red {
     border-color: #f00 !important;
 }
@@ -107,7 +111,7 @@
 
 .arrow-button {
     width: 48px !important;
-    height: 42px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
