@@ -6,7 +6,7 @@
     padding-right: 16px;
 }
 
-.info-uniform:focus { 
+.info-uniform:focus {
     outline: none;
     border: 1px solid #01b075;
 }
@@ -28,11 +28,12 @@
 }
 
 .options {
-    position: relative;
+    position: absolute;
     top: 6px;
     left: 0;
     right: 0;
     opacity: 0;
+    display: none;
     background-color: #fff;
     pointer-events: none;
     border: 1px solid #bbbbbb;
@@ -46,6 +47,7 @@
     flex-direction: column;
     align-items: stretch;
     pointer-events: all;
+    z-index: 12;
 }
 
 .options .option {
@@ -99,12 +101,24 @@
     align-items: center;
 }
 
+.input-wrapper .combobox-input {
+    border-right: 1px solid #bbbbbb;
+}
+
 .arrow-button {
-    width: 42px;
+    width: 48px !important;
     height: 42px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 1px solid #bbbbbb;
     cursor: pointer;
+}
+
+.arrow-button svg {
+    transition-duration: 0.2s;
+    transform: rotate(0deg);
+}
+
+.arrow-button svg.open {
+    transform: rotate(180deg);
 }

@@ -66,7 +66,7 @@ export default {
   },
   methods: {
     getSelectedRow(employeeId) {
-      this.selectedId = employeeId;
+      this.selectedId = (this.selectedId == employeeId) ? "" : employeeId;
     },
     showEmployeeDetail(employeeId) {
       this.selectedId = employeeId;

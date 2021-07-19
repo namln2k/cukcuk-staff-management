@@ -11,12 +11,12 @@
     padding-left: 12px;
     padding-right: 12px;
     display: flex;
+    /* align-items: center; */
     justify-content: center;
 }
 
 .content-item .content-item-left {
     display: flex;
-    align-items: center;
 }
 
 .content-item .content-item-right {
@@ -48,7 +48,7 @@
 
 .content-item-left .searchbox {
     width: 328px;
-    height: 38px;
+    height: 44px;
     border: 1px solid #bbbbbb;
     border-radius: 4px;
     margin-right: 12px;
@@ -79,6 +79,7 @@
 
 .button-refresh {
     padding: 4px 12px 4px 12px;
+    margin-top: 6px;
     border: 1px solid #bbbbbb;
     background-color: #ffffff;
     display: flex;

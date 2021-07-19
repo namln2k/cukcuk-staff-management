@@ -32,10 +32,11 @@
       <div class="info-field-part">
         <AutoComplete
           id="gender"
-          :suggestions="genderData"
-          v-model="genderSelected"
+          :options="genderData"
+          v-model="genderValue"
           inputLabel="Giới tính"
-          :value="genderSelected"
+          :text="genderText"
+          :value="genderValue"
         ></AutoComplete>
       </div>
     </div>
@@ -93,19 +94,21 @@
       <div class="info-field-part">
         <AutoComplete
           id="position-name"
-          :suggestions="positionData"
-          v-model="positionSelected"
+          :options="positionData"
+          v-model="positionValue"
           inputLabel="Vị trí"
-          :text="positionSelected"
+          :value="positionValue"
+          :text="positionText"
         ></AutoComplete>
       </div>
       <div class="info-field-part">
         <AutoComplete
           id="department-name"
-          :suggestions="departmentData"
-          v-model="departmentSelected"
+          :options="departmentData"
+          v-model="departmentValue"
           inputLabel="Phòng ban"
-          :text="departmentSelected"
+          :value="departmentValue"
+          :text="departmentText"
         ></AutoComplete>
       </div>
     </div>
@@ -139,10 +142,11 @@
       <div class="info-field-part">
         <AutoComplete
           id="work-status"
-          :suggestions="workStatusData"
-          v-model="workStatusSelected"
+          :options="workStatusData"
+          v-model="workStatusValue"
           inputLabel="Tình trạng công việc"
-          :text="workStatusSelected"
+          :value="workStatusValue"
+          :text="workStatusText"
         ></AutoComplete>
       </div>
     </div>
@@ -164,18 +168,18 @@ export default {
     AutoComplete,
   },
   methods: {
-    changeSelection(currentSelection) {
-      this.genderSelected = currentSelection;
-    },
+    
   },
   data() {
     return {
+      editMode: "post",
       newEmployeeCode: "",
       employeeId: "",
       employeeCode: "",
       employeeName: "",
       dateOfBirth: "",
-      genderSelected: "",
+      genderValue: "",
+      genderText: "",
       genderData: [
         { text: "Nữ", value: 0 },
         { text: "Nam", value: 1 },
@@ -186,26 +190,29 @@ export default {
       identityPlace: "",
       email: "",
       phoneNumber: "",
-      positionSelected: "",
+      positionValue: "",
+      positionText: "",
       positionData: [
         { text: "Giám đốc", value: 0 },
         { text: "Trưởng phòng", value: 1 },
         { text: "Phó phòng", value: 2 },
       ],
-      departmentSelected: "",
+      departmentValue: "",
+      departmentText: "",
       departmentData: [
         { text: "Phòng nhân sự", value: 0 },
-        { text: "Phòng đào tạo", value: 1 },
+        { text: "Phòng đào tạo", value: 1 }, 
         { text: "Khối sản xuất", value: 2 },
       ],
       personalTaxCode: "",
       salary: "",
       joinDate: "",
-      workStatusSelected: "",
+      workStatusValue: "",
+      workStatusText: "",
       workStatusData: [
-        { text: "0", value: 0 },
-        { text: "1", value: 1 },
-        { text: "2", value: 2 },
+        { text: "Số 0", value: 0 },
+        { text: "Số 1", value: 1 },
+        { text: "Số 2", value: 2 },
       ],
     };
   },
@@ -213,22 +220,28 @@ export default {
     EventBus.$on("showForm", (employeeId) => {
       this.employeeId = employeeId;
       if (employeeId == "" || !employeeId) {
+        this.editMode = "post";
         this.employeeCode = this.newEmployeeCode;
         this.employeeName = "";
         this.dateOfBirth = "";
-        this.genderSelected = "";
+        this.genderText = "";
+        this.genderValue = "";
         this.identityNumber = "";
         this.identityDate = "";
         this.identityPlace = "";
         this.email = "";
         this.phoneNumber = "";
-        this.positionSelected = "";
-        this.departmentSelected = "";
+        this.positionText = "";
+        this.positionValue = "";
+        this.departmentText = "";
+        this.departmentValue = "";
         this.personalTaxCode = "";
         this.salary = "";
         this.joinDate = "";
-        this.workStatusSelected = "";
+        this.workStatusText = "";
+        this.workStatusValue = "";
       } else {
+        this.editMode = "put";
         axios
           .get("http://cukcuk.manhnv.net/v1/Employees/" + employeeId)
           .then((response) => {
@@ -241,9 +254,11 @@ export default {
             if (this.dateOfBirth == "Invalid Date") {
               this.dateOfBirth = "";
             }
-            this.genderSelected = data.GenderName;
-            if (!this.genderSelected) {
-              this.genderSelected = "";
+            this.genderValue = data.Gender.toString();
+            this.genderText = data.GenderName;
+            if (!this.genderText) {
+              this.genderValue = "";
+              this.genderText = "";
             }
             this.identityNumber = data.IdentityNumber;
             this.identityDate = data.IdentityDate;
@@ -254,13 +269,17 @@ export default {
             this.identityPlace = data.IdentityPlace;
             this.email = data.Email;
             this.phoneNumber = data.PhoneNumber;
-            this.positionSelected = data.PositionName;
-            if (!this.positionSelected) {
-              this.positionSelected = "";
+            this.positionValue = data.PositionCode;
+            this.positionText = data.PositionName;
+            if (!this.positionText) {
+              this.positionValue = "";
+              this.positionText = "";
             }
-            this.departmentSelected = data.DepartmentName;
-            if (!this.departmentSelected) {
-              this.departmentSelected = "";
+            this.departmentValue = data.DepartmentCode;
+            this.departmentText = data.DepartmentName;
+            if (!this.departmentText) {
+              this.departmentValue = "";
+              this.departmentText = "";
             }
             this.personalTaxCode = data.PersonalTaxCode;
             this.salary = data.Salary;
@@ -274,21 +293,22 @@ export default {
             if (this.joinDate == "Invalid Date") {
               this.joinDate = "";
             }
-            this.workStatusSelected = data.WorkStatus;
-            if (!this.workStatusSelected) {
-              this.workStatusSelected = "";
+            this.workStatusValue = data.WorkStatus.toString();
+            this.workStatusText = data.WorkStatus.toString();
+            if (!this.workStatusText) {
+              this.workStatusValue = "";
+              this.workStatusText = "";
             } else {
               this.workStatusSelected = this.workStatusSelected.toString();
             }
           });
       }
     });
-    EventBus.$on("closeForm", () => {
-      
-    });
     // EventBus.$on("saveForm", () => {
-    //   if (this.employeeId == "") {
+    //   if (this.editMode == "post") {
+
     //   } else {
+        
     //   }
     // });
   },

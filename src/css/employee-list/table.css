@@ -2,8 +2,9 @@
     width: calc(100% - 24px);
     height: calc(100vh - 226px);
     overflow: scroll;
-    margin-top: 12px;
-    margin-left: 12px;
+    position: absolute;
+    top: 113px;
+    left: 12px;
 }
 
 .my-table {

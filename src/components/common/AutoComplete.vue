@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="{ open: openSuggestion }">
+  <div v-bind:class="{ open: openOptions }">
     <div>{{ inputLabel }}</div>
     <div class="input-wrapper" :class="isValidate ? '' : 'border-red'">
       <input
@@ -8,6 +8,7 @@
         type="text"
         autocomplete="none"
         :value="value"
+        :text="text"
         @click="updateValue($event.target.value)"
         @input="updateValue($event.target.value)"
         @blur="onBlur"
@@ -16,18 +17,23 @@
         @keydown.up="up"
         tabindex="1"
       />
-      <!-- <div class="arrow-button" @mousedown="openAllSuggestion()">V</div> -->
+      <div class="arrow-button">
+        <font-awesome-icon
+          icon="chevron-down"
+          @click="toggleArrow($event)"
+        />
+      </div>
     </div>
     <div class="options">
       <div
         class="option"
-        v-for="(suggestion, index) in matches"
+        v-for="(options, index) in matches"
         :key="index"
         v-bind:class="{ active: isActive(index) }"
-        @mousedown="suggestionClick(index)"
+        @mousedown="onOptionClicked(index)"
       >
         <div class="checkmark"></div>
-        <div>{{ suggestion.text }}</div>
+        <div>{{ option.text }}</div>
       </div>
     </div>
   </div>
@@ -40,6 +46,7 @@ export default {
       open: false,
       current: 0,
       isValidate: true,
+      showAll: false,
     };
   },
   props: {
@@ -47,7 +54,11 @@ export default {
       type: String,
       required: true,
     },
-    suggestions: {
+    text: {
+      type: String,
+      required: true,
+    },
+    options: {
       type: Array,
       required: true,
     },
@@ -56,43 +67,48 @@ export default {
   },
   computed: {
     matches() {
-      return this.suggestions.filter((obj) => {
-        if (this.value != null && this.value != "") {
-          return (
-            obj.text
-              .toLocaleUpperCase()
-              .indexOf(this.value.toLocaleUpperCase()) > -1
-          );
-        } else {
-          return this.suggestions;
-        }
-      });
+      if (!this.showAll) {
+        return this.options.filter((obj) => {
+          if (this.text != null && this.text != "") {
+            return (
+              obj.text
+                .toLocaleUpperCase()
+                .indexOf(this.text.toLocaleUpperCase()) > -1
+            );
+          } else {
+            return this.options;
+          }
+        });
+      } else {
+        return this.options;
+      }
     },
-    openSuggestion() {
+    openOptions() {
       return (
         this.selection !== "" && this.matches.length !== 0 && this.open === true
       );
     },
   },
   methods: {
-    updateValue(value) {
+    updateValue(text) {
+      this.showAll = false;
       if (this.open === false) {
         this.open = true;
         this.current = 0;
       }
       if (
-        this.suggestions.some((e) =>
-          e.text.toLocaleUpperCase().includes(value.toLocaleUpperCase())
+        this.options.some((e) =>
+          e.text.toLocaleUpperCase().includes(text.toLocaleUpperCase())
         )
       ) {
         this.isValidate = true;
       } else {
         this.isValidate = false;
       }
-      this.$emit("input", value);
+      this.$emit("input", text);
     },
     onBlur() {
-      if (!this.suggestions.some((e) => e.text === this.value)) {
+      if (!this.options.some((e) => e.text === this.text)) {
         this.isValidate = false;
       }
       this.open = false;
@@ -114,30 +130,16 @@ export default {
     isActive(index) {
       return index === this.current;
     },
-    suggestionClick(index) {
+    onOptionClicked(index) {
       this.$emit("input", this.matches[index].text);
       this.open = false;
     },
-    openAllSuggestion() {
-      this.matches = this.suggestions;
-      this.open = true;
-    }
+    toggleArrow(event) {
+      this.showAll = true;
+      event.target.closest("svg").classList.toggle("open");
+      this.open = !this.open;
+    },
   },
-  // created() {
-  //   let me = this;
-  //   axios.get("http://cukcuk.manhnv.net/v1/Employees/").then((response) => {
-  //     response.data.forEach((value) => {
-  //       value.DateOfBirth = dayjs(value.DateOfBirth).format("DD-MM-YYYY");
-  //       if (value.DateOfBirth == "Invalid Date") {
-  //         value.DateOfBirth = "Không xác định";
-  //       }
-  //       if (value.Salary)
-  //         value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
-
-  //       me.employees.push(value);
-  //     });
-  //   });
-  // },
 };
 </script>
 <style scoped>
