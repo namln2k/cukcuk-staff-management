@@ -8,20 +8,26 @@
     >
       <input
         :id="id"
+        ref="inputField"
         class="info-uniform combobox-input"
         type="text"
         autocomplete="none"
         :value="value"
         :text="text"
         @focus="updateValue($event.target.value)"
-        @input="updateValue($event.target.value)"
+        @input="($event) => { this.selected = ''; this.hovered = ''; updateValue($event.target.value) }"
+        @click="updateValue($event.target.value)"
         @blur="onBlur"
         @keydown.enter="enter"
         @keydown.down="down"
         @keydown.up="up"
         tabindex="1"
       />
-      <div class="arrow-button" :class="{ 'open': showAll }" @click="showAll = true">
+      <div
+        class="arrow-button"
+        :class="{ open: showAll }"
+        @click="showAllOptions"
+      >
         <font-awesome-icon icon="chevron-down" />
       </div>
     </div>
@@ -30,7 +36,7 @@
         class="option"
         v-for="(option, index) in matches"
         :key="index"
-        v-bind:class="{ active: isActive(index) }"
+        :class="{ active: isActive(option.text), hovered: isHover(option.text) }"
         @mousedown="onOptionClicked(index)"
       >
         <div class="checkmark"></div>
@@ -49,6 +55,8 @@ export default {
       isValidate: true,
       isFocus: false,
       showAll: false,
+      selected: "",
+      hovered: "",
     };
   },
   props: {
@@ -95,7 +103,6 @@ export default {
       this.isFocus = true;
       if (this.open == false) {
         this.open = true;
-        this.current = -1;
       }
       if (
         this.options.some((e) =>
@@ -120,30 +127,52 @@ export default {
     },
     enter() {
       this.$emit("input", this.matches[this.current].text);
+      this.selected = this.matches[this.current].text;
       this.open = false;
       this.showAll = false;
+      this.hovered = "";
     },
     up() {
       if (this.current > 0) {
         this.current--;
+        this.hovered = this.matches[this.current].text;
+      } else {
+        this.current = this.matches.length - 1;
+        this.hovered = this.matches[this.current].text;
       }
     },
     down() {
       if (this.current < this.matches.length - 1) {
         this.current++;
+        this.hovered = this.matches[this.current].text;
+      } else {
+        this.current = 0;
+        this.hovered = this.matches[this.current].text;
       }
     },
-    isActive(index) {
-      return index === this.current;
+    isHover(text) {
+      return (text == this.hovered);
+    },
+    isActive(text) {
+      return text == this.selected;
     },
     onOptionClicked(index) {
       this.$emit("input", this.matches[index].text);
+      this.selected = this.matches[index].text;
       this.current = index;
       this.open = false;
       this.showAll = false;
+      this.hovered = "";
     },
+    showAllOptions() {
+      this.showAll = true;
+      this.open = true;
+      this.hovered = "";
+      this.isValidate = true;
+    }
   },
   created() {
+    this.selected = "";
     document.addEventListener("click", (event) => {
       let target = event.target;
       let inputWrapper = this.$refs["input-wrapper"];

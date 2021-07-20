@@ -77,13 +77,17 @@
     background-color: #E9EBEE;
 }
 
-.options .option:hover .checkmark {
+.options .option:hover .checkmark, .options .option.hovered .checkmark {
     border-bottom: 2px solid #E9EBEE;
     border-right: 2px solid #E9EBEE;
 }
 
 .options .option.active {
     background-color: #01b075;
+}
+
+.options .option.hovered {
+    background-color: #E9EBEE !important;
 }
 
 .options .option.active div {
