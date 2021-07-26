@@ -10,19 +10,17 @@
         />
       </div>
       <AutoComplete
-        id="position-dropdown"
+        id="position-page"
         :options="positionData"
-        v-model="positionValue"
-        :value="positionValue"
-        :text="positionText"
+        :content="data.PositionCode"
+        @changeValue="changeValue"
       ></AutoComplete>
       <AutoComplete
         style="margin-left: 24px;"
-        id="department-dropdown"
+        id="department-page"
         :options="departmentData"
-        v-model="departmentValue"
-        :value="departmentValue"
-        :text="departmentText"
+        :content="data.DepartmentCode"
+        @changeValue="changeValue"
       ></AutoComplete>
     </div>
     <div class="content-item-right button-refresh" id="button-refresh">
@@ -40,15 +38,15 @@ export default {
   },
   data() {
     return {
-      positionValue: "",
-      positionText: "",
+      data: {
+        PositionCode: "",
+        DepartmentCode: "",
+      },
       positionData: [
         { text: "Giám đốc", value: 0 },
         { text: "Trưởng phòng", value: 1 },
         { text: "Phó phòng", value: 2 },
       ],
-      departmentValue: "",
-      departmentText: "",
       departmentData: [
         { text: "Phòng nhân sự", value: 0 },
         { text: "Phòng đào tạo", value: 1 },
@@ -56,6 +54,15 @@ export default {
       ],
     };
   },
+  methods: {
+    changeValue(id, newValue) {
+      if (id == "position-page") {
+        this.data.PositionCode = newValue;
+      } else if (id == "department-page") {
+        this.data.DepartmentCode = newValue;
+      }
+    }
+  }
 };
 </script>
 <style scoped>

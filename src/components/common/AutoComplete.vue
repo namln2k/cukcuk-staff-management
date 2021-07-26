@@ -2,7 +2,7 @@
   <div v-bind:class="{ open: openOptions }">
     <div>{{ inputLabel }}</div>
     <div
-      ref="input-wrapper"
+      ref="inputWrapper"
       class="input-wrapper"
       :class="{ 'border-red': !isValidate, 'border-green': isFocus }"
     >
@@ -12,10 +12,15 @@
         class="info-uniform combobox-input"
         type="text"
         autocomplete="none"
-        :value="value"
-        :text="text"
+        :value="content"
         @focus="updateValue($event.target.value)"
-        @input="($event) => { this.selected = ''; this.hovered = ''; updateValue($event.target.value) }"
+        @input="
+          ($event) => {
+            this.selected = '';
+            this.hovered = '';
+            updateValue($event.target.value);
+          }
+        "
         @click="updateValue($event.target.value)"
         @blur="onBlur"
         @keydown.enter="enter"
@@ -36,7 +41,10 @@
         class="option"
         v-for="(option, index) in matches"
         :key="index"
-        :class="{ active: isActive(option.text), hovered: isHover(option.text) }"
+        :class="{
+          active: isActive(option.text),
+          hovered: isHover(option.text),
+        }"
         @mousedown="onOptionClicked(index)"
       >
         <div class="checkmark"></div>
@@ -60,11 +68,7 @@ export default {
     };
   },
   props: {
-    value: {
-      type: String,
-      required: true,
-    },
-    text: {
+    content: {
       type: String,
       required: true,
     },
@@ -79,11 +83,11 @@ export default {
     matches() {
       if (!this.showAll) {
         return this.options.filter((obj) => {
-          if (this.value != null && this.value != "") {
+          if (this.content != null && this.content != "") {
             return (
               obj.text
                 .toLocaleUpperCase()
-                .indexOf(this.value.toLocaleUpperCase()) > -1
+                .indexOf(this.content.toLocaleUpperCase()) > -1
             );
           } else {
             return this.options;
@@ -113,12 +117,12 @@ export default {
       } else {
         this.isValidate = false;
       }
-      this.$emit("input", text);
+      this.$emit("changeValue", this.id, text);
     },
     onBlur() {
-      if (this.value == "") {
+      if (this.content == "") {
         this.isValidate = true;
-      } else if (!this.options.some((e) => e.text == this.value)) {
+      } else if (!this.options.some((e) => e.text == this.content)) {
         this.isValidate = false;
       }
       this.isFocus = false;
@@ -131,6 +135,7 @@ export default {
       this.open = false;
       this.showAll = false;
       this.hovered = "";
+      this.$emit("changeValue", this.id, this.selected);
     },
     up() {
       if (this.current > 0) {
@@ -151,7 +156,7 @@ export default {
       }
     },
     isHover(text) {
-      return (text == this.hovered);
+      return text == this.hovered;
     },
     isActive(text) {
       return text == this.selected;
@@ -163,23 +168,29 @@ export default {
       this.open = false;
       this.showAll = false;
       this.hovered = "";
+      this.$emit("changeValue", this.id, this.selected);
     },
     showAllOptions() {
       this.showAll = true;
       this.open = true;
       this.hovered = "";
       this.isValidate = true;
-    }
+    },
   },
   created() {
-    this.selected = "";
+    this.selected = this.content;
     document.addEventListener("click", (event) => {
       let target = event.target;
-      let inputWrapper = this.$refs["input-wrapper"];
+      let inputWrapper = this.$refs.inputWrapper;
       if (!inputWrapper.contains(target)) {
         this.onBlur();
       }
     });
+  },
+  watch: {
+    content: function (newVal) {
+      this.selected = newVal;
+    },
   },
 };
 </script>

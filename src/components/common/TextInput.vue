@@ -12,7 +12,7 @@
       @input="validate($event)"
       @blur="validate($event)"
       tabindex="1"
-      :value="text"
+      :value="content"
     />
   </div>
 </template>
@@ -23,7 +23,7 @@ export default {
     id: String,
     inputLabel: String,
     required: Boolean,
-    text: String,
+    content: String,
   },
   methods: {
     validate(event) {
@@ -31,6 +31,7 @@ export default {
         this.isValidate =
           event.target.value != "" && event.target.value != null;
       }
+      this.$emit("changeValue", this.id, event.target.value);
     },
   },
   data() {
@@ -38,6 +39,7 @@ export default {
       isValidate: true,
     };
   },
+  computed: {},
 };
 </script>
 <style scoped>

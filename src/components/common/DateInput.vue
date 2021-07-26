@@ -10,7 +10,8 @@
       class="info-uniform date-input"
       tabindex="1"
       autocomplete="none"
-      :value="text"
+      :value="content"
+      @input="onInput($event)"
     />
   </div>
 </template>
@@ -21,8 +22,13 @@ export default {
     inputLabel: String,
     required: Boolean,
     id: String,
-    text: String,
+    content: String,
   },
+  methods: {
+    onInput(event) {
+      this.$emit("changeValue", this.id, event.target.value);
+    },
+  }
 };
 </script>
 <style scoped>
