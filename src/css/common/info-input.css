@@ -1,7 +1,6 @@
 .info-uniform {
     border: 1px solid #bbbbbb;
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+    border-radius: 4px;
     padding-left: 16px;
     padding-right: 16px;
 }
@@ -114,7 +113,7 @@
 }
 
 .arrow-button {
-    width: 48px !important;
+    width: 48px;
     height: 40px;
     display: flex;
     align-items: center;

@@ -7,6 +7,7 @@
       :class="{ 'border-red': !isValidate, 'border-green': isFocus }"
     >
       <input
+        v-tooltip="{trigger: 'manual', content: 'Trường này không được phép để trống', show: !isValidate}"
         :id="id"
         ref="inputField"
         class="info-uniform combobox-input"
@@ -122,7 +123,7 @@ export default {
     onBlur() {
       if (this.content == "") {
         this.isValidate = true;
-      } else if (!this.options.some((e) => e.text == this.content)) {
+      } else if (!this.options.some((e) => e.text.localeCompare(this.content))) {
         this.isValidate = false;
       }
       this.isFocus = false;
@@ -179,6 +180,7 @@ export default {
   },
   created() {
     this.selected = this.content;
+    this.isValidate = true;
     document.addEventListener("click", (event) => {
       let target = event.target;
       let inputWrapper = this.$refs.inputWrapper;

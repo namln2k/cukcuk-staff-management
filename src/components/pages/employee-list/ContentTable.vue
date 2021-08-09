@@ -1,5 +1,6 @@
 <template>
   <div class="table-container" @selectionChanged="selectedId = $event">
+    <LoadingSpinner v-show="isLoading"></LoadingSpinner>
     <table class="my-table">
       <thead>
         <tr>
@@ -39,16 +40,19 @@
   </div>
 </template>
 <script>
-import axios from "axios";
 import dayjs from "dayjs";
-import {EventBus} from "@/js/EventBus.js"
+import LoadingSpinner from "../../common/LoadingSpinner.vue";
+import { EventBus } from "@/js/EventBus.js";
+import EmployeeApi from "../../../api/EmployeeApi"
+import PositionApi from "../../../api/PositionApi"
+import DepartmentApi from "../../../api/DepartmentApi"
 
 export default {
   name: "ContentTable",
   props: {},
   created() {
-    let me = this;
-    axios.get("http://cukcuk.manhnv.net/v1/Employees/").then((response) => {
+    this.isLoading = true;
+    EmployeeApi.getAll().then((response) => {
       response.data.forEach((value) => {
         value.DateOfBirth = dayjs(value.DateOfBirth).format("DD-MM-YYYY");
         if (value.DateOfBirth == "Invalid Date") {
@@ -58,15 +62,42 @@ export default {
         if (value.joinDate == "Invalid Date") {
           value.joinDate = "Không xác định";
         }
-        if (value.Salary)
+        if (value.Salary != null)
           value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
-        me.employees.push(value);
+        if (value.PositionId != null) {
+          value.PositionName = this.positionData.find((opt) => {
+            return opt.value == value.PositionId;
+          }).text;
+        }
+        if (value.DepartmentId != null) {
+          value.DepartmentName = this.departmentData.find((opt) => {
+            return opt.value == value.DepartmentId;
+          }).text;
+          this.employees.push(value);
+        }
+      });
+      this.isLoading = false;
+    });
+    PositionApi.getAll().then((response) => {
+      response.data.forEach((e) => {
+        let pos = {};
+        pos.text = e.PositionName;
+        pos.value = e.PositionId;
+        this.positionData.push(pos);
+      });
+    });
+    DepartmentApi.getAll().then((response) => {
+      response.data.forEach((e) => {
+        let dep = {};
+        dep.text = e.DepartmentName;
+        dep.value = e.DepartmentId;
+        this.departmentData.push(dep);
       });
     });
   },
   methods: {
     getSelectedRow(employeeId) {
-      this.selectedId = (this.selectedId == employeeId) ? "" : employeeId;
+      this.selectedId = this.selectedId == employeeId ? "" : employeeId;
     },
     showEmployeeDetail(employeeId) {
       this.selectedId = employeeId;
@@ -76,8 +107,14 @@ export default {
   data() {
     return {
       employees: [],
+      positionData: [],
+      departmentData: [],
       selectedId: String,
+      isLoading: true,
     };
+  },
+  components: {
+    LoadingSpinner,
   },
 };
 </script>

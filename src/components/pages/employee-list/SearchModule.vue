@@ -1,6 +1,6 @@
 <template>
   <div class="content-item search-module">
-    <div class="content-item-left">
+    <div class="content-item-left" v-show="!isLoading">
       <div class="content-item-left-left searchbox">
         <img class="searchbox-icon" src="../../../assets/icons/search.png" />
         <input
@@ -16,20 +16,27 @@
         @changeValue="changeValue"
       ></AutoComplete>
       <AutoComplete
-        style="margin-left: 24px;"
+        style="margin-left: 18px; margin-right: 12px"
         id="department-page"
         :options="departmentData"
         :content="data.DepartmentCode"
         @changeValue="changeValue"
       ></AutoComplete>
     </div>
-    <div class="content-item-right button-refresh" id="button-refresh">
-      <img src="../../../assets/icons/refresh.png" />
+    <div class="content-item-right">
+      <div class="button-delete" id="button-delete">
+        <font-awesome-icon icon="trash-alt" />
+      </div>
+      <div class="button-refresh" id="button-refresh">
+        <img src="../../../assets/icons/refresh.png" />
+      </div>
     </div>
   </div>
 </template>
 <script>
 import AutoComplete from "../../common/AutoComplete.vue";
+import PositionApi from "../../../api/PositionApi";
+import DepartmentApi from "../../../api/DepartmentApi";
 
 export default {
   name: "SearchModule",
@@ -38,20 +45,13 @@ export default {
   },
   data() {
     return {
+      isLoading: true,
       data: {
         PositionCode: "",
         DepartmentCode: "",
       },
-      positionData: [
-        { text: "Giám đốc", value: 0 },
-        { text: "Trưởng phòng", value: 1 },
-        { text: "Phó phòng", value: 2 },
-      ],
-      departmentData: [
-        { text: "Phòng nhân sự", value: 0 },
-        { text: "Phòng đào tạo", value: 1 },
-        { text: "Khối sản xuất", value: 2 },
-      ],
+      positionData: [],
+      departmentData: [],
     };
   },
   methods: {
@@ -61,8 +61,27 @@ export default {
       } else if (id == "department-page") {
         this.data.DepartmentCode = newValue;
       }
-    }
-  }
+    },
+  },
+  created() {
+    PositionApi.getAll().then((response) => {
+      response.data.forEach((e) => {
+        let pos = {};
+        pos.text = e.PositionName;
+        pos.value = e.PositionId;
+        this.positionData.push(pos);
+      });
+    });
+    DepartmentApi.getAll().then((response) => {
+      response.data.forEach((e) => {
+        let dep = {};
+        dep.text = e.DepartmentName;
+        dep.value = e.DepartmentId;
+        this.departmentData.push(dep);
+      });
+      this.isLoading = false;
+    });
+  },
 };
 </script>
 <style scoped>

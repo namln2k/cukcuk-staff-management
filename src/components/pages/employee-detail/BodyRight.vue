@@ -105,7 +105,7 @@
           id="department-form"
           :options="departmentData"
           inputLabel="Phòng ban"
-          :content="data.DepartmentCode"
+          :content="data.DepartmentName"
           @changeValue="changeValue"
         ></AutoComplete>
       </div>
@@ -156,6 +156,9 @@ import AutoComplete from "../../common/AutoComplete.vue";
 import { EventBus } from "@/js/EventBus.js";
 import axios from "axios";
 import dayjs from "dayjs";
+import EmployeeApi from "../../../api/EmployeeApi";
+import PositionApi from "../../../api/PositionApi";
+import DepartmentApi from "../../../api/DepartmentApi";
 
 export default {
   name: "BodyRight",
@@ -178,7 +181,7 @@ export default {
         Email: "",
         PhoneNumber: "",
         PositionName: "",
-        DepartmentCode: "",
+        DepartmentName: "",
         PersonalTaxCode: "",
         Salary: "",
         JoinDate: "",
@@ -194,11 +197,11 @@ export default {
       positionData: [],
       departmentData: [],
       workStatusData: [
-        { text: "Số 0", value: 0 },
-        { text: "Số 1", value: 1 },
-        { text: "Số 2", value: 2 },
-        { text: "Số 3", value: 3 },
-        { text: "Số 4", value: 4 },
+        { text: "Đang làm", value: 0 },
+        { text: "Thực tập", value: 1 },
+        { text: "Đang nghỉ phép", value: 2 },
+        { text: "Đã nghỉ", value: 3 },
+        { text: "Khác", value: 4 },
       ],
     };
   },
@@ -216,72 +219,145 @@ export default {
         this.data.Email = "";
         this.data.PhoneNumber = "";
         this.data.PositionName = "";
-        this.data.DepartmentCode = "";
+        this.data.DepartmentName = "";
         this.data.PersonalTaxCode = "";
         this.data.Salary = "";
         this.data.JoinDate = "";
         this.data.WorkStatus = "";
       } else {
         this.editMode = "put";
-        axios
-          .get("http://cukcuk.manhnv.net/v1/Employees/" + employeeId)
-          .then((response) => {
-            var e = response.data;
-            this.data.EmployeeId = e.EmployeeId;
-            this.data.EmployeeCode = e.EmployeeCode;
-            this.data.FullName = e.FullName;
-            this.data.DateOfBirth = dayjs(e.dateOfBirth).format("YYYY-MM-DD");
-            if (this.data.DateOfBirth == "Invalid Date") {
-              this.data.DateOfBirth = "";
-            }
-            console.log(e.Gender);
-            if (e.Gender == "" || e.Gender == null) {
-              this.data.Gender = "";
-            } else {
-              this.data.Gender = this.genderData.find((opt) => {
-                return opt.value == e.Gender;
-              }).text;
-            }
-            this.data.IdentityNumber = e.IdentityNumber;
-            this.data.IdentityDate = dayjs(e.IdentityDate).format("YYYY-MM-DD");
-            if (this.data.IdentityDate == "Invalid Date") {
-              this.data.IdentityDate = "";
-            }
-            this.data.IdentityPlace = e.IdentityPlace;
-            this.data.Email = e.Email;
-            this.data.PhoneNumber = e.PhoneNumber;
-            if (e.PositionName == null) {
-              this.data.PositionName = "";
-            } else {
-              this.data.PositionName = this.positionData.find((opt) => {
-                return opt.value == e.PositionCode;
-              }).text;
-            }
-            if (e.DepartmentCode == null || e.DepartmentCode == "") {
-              this.data.DepartmentCode = "";
-            } else {
-              this.data.DepartmentCode = this.departmentData.find((opt) => {
-                return opt.value == e.DepartmentCode;
-              }).text;
-            }
-            this.data.PersonalTaxCode = e.PersonalTaxCode;
-            if (e.Salary == null) {
-              this.data.Salary = "";
-            } else {
-              this.data.Salary = e.Salary.toString();
-            }
-            this.data.JoinDate = dayjs(e.JoinDate).format("YYYY-MM-DD");
-            if (this.data.JoinDate == "Invalid Date") {
-              this.data.JoinDate = "";
-            }
-            if (e.WorkStatus == "" || e.WorkStatus == null) {
-              this.data.WorkStatus = "";
-            } else {
-              this.data.WorkStatus = this.workStatusData.find((opt) => {
-                return opt.value == e.WorkStatus;
-              }).text;
-            }
-          });
+        EmployeeApi.getById(employeeId).then((response) => {
+          var e = response.data;
+          this.data.EmployeeId = e.EmployeeId;
+          this.data.EmployeeCode = e.EmployeeCode;
+          this.data.FullName = e.FullName;
+          this.data.DateOfBirth = dayjs(e.DateOfBirth).format("YYYY-MM-DD");
+          if (this.data.DateOfBirth == "Invalid Date") {
+            this.data.DateOfBirth = "";
+          }
+          if (e.Gender == null) {
+            this.data.Gender = "Khác";
+          } else {
+            this.data.Gender = this.genderData.find((opt) => {
+              return opt.value == e.Gender;
+            }).text;
+          }
+          this.data.IdentityNumber = e.IdentityNumber;
+          this.data.IdentityDate = dayjs(e.IdentityDate).format("YYYY-MM-DD");
+          if (this.data.IdentityDate == "Invalid Date") {
+            this.data.IdentityDate = "";
+          }
+          this.data.IdentityPlace = e.IdentityPlace;
+          this.data.Email = e.Email;
+          this.data.PhoneNumber = e.PhoneNumber;
+          if (e.PositionId == null) {
+            this.data.PositionName = "";
+          } else {
+            this.data.PositionName = this.positionData.find((opt) => {
+              return opt.value == e.PositionId;
+            }).text;
+          }
+          if (e.DepartmentId == null) {
+            this.data.DepartmentName = "";
+          } else {
+            this.data.DepartmentName = this.departmentData.find((opt) => {
+              return opt.value == e.DepartmentId;
+            }).text;
+          }
+          this.data.PersonalTaxCode = e.PersonalTaxCode;
+          if (e.Salary == null) {
+            this.data.Salary = "";
+          } else {
+            this.data.Salary = e.Salary.toString();
+          }
+          this.data.JoinDate = dayjs(e.JoinDate).format("YYYY-MM-DD");
+          if (this.data.JoinDate == "Invalid Date") {
+            this.data.JoinDate = "";
+          }
+          if (e.Gender == null) {
+            this.data.Gender = "Khác";
+          } else {
+            this.data.Gender = this.genderData.find((opt) => {
+              return opt.value == e.Gender;
+            }).text;
+          }
+          if (e.WorkStatus == null) {
+            this.data.WorkStatus = "Khác";
+          } else {
+            this.data.WorkStatus = this.workStatusData.find((opt) => {
+              return opt.value == e.WorkStatus;
+            }).text;
+          }
+        });
+      }
+    });
+    EventBus.$on("saveForm", () => {
+      let dataToSubmit = {};
+      dataToSubmit.EmployeeCode = this.data.EmployeeCode;
+      dataToSubmit.FullName = this.data.FullName;
+      if (this.data.Gender == "" || this.data.Gender == null) {
+        dataToSubmit.Gender = null;
+      } else {
+        dataToSubmit.Gender = this.genderData.find((opt) => {
+          return opt.text == this.data.Gender;
+        }).value;
+      }
+      if (this.data.DateOfBirth == "" || this.data.DateOfBirth == null) {
+        dataToSubmit.DateOfBirth = null;
+      } else {
+        dataToSubmit.DateOfBirth = new Date(this.data.DateOfBirth)
+          .toISOString()
+          .slice(0, 19);
+      }
+      dataToSubmit.PhoneNumber = this.data.PhoneNumber;
+      dataToSubmit.Email = this.data.Email;
+      dataToSubmit.IdentityNumber = this.data.IdentityNumber;
+      if (this.data.IdentityDate == "" || this.data.IdentityDate == null) {
+        dataToSubmit.IdentityDate = null;
+      } else {
+        dataToSubmit.IdentityDate = new Date(this.data.IdentityDate)
+          .toISOString()
+          .slice(0, 19);
+      }
+      dataToSubmit.IdentityPlace = this.data.IdentityPlace;
+      if (this.data.JoinDate == "" || this.data.JoinDate == null) {
+        dataToSubmit.JoinDate = null;
+      } else {
+        dataToSubmit.JoinDate = new Date(this.data.JoinDate)
+          .toISOString()
+          .slice(0, 19);
+      }
+      if (this.data.PositionName == "" || this.data.PositionName == null) {
+        dataToSubmit.PositionId = null;
+      } else {
+        dataToSubmit.PositionId = this.positionData.find((opt) => {
+          return opt.text == this.data.PositionName;
+        }).value;
+      }
+      if (this.data.DepartmentName == "" || this.data.DepartmentName == null) {
+        dataToSubmit.DepartmentId = null;
+      } else {
+        dataToSubmit.DepartmentId = this.departmentData.find((opt) => {
+          return opt.text == this.data.DepartmentName;
+        }).value;
+      }
+      if (this.data.WorkStatus == "" || this.data.WorkStatus == null) {
+        dataToSubmit.WorkStatus = null;
+      } else {
+        dataToSubmit.WorkStatus = this.workStatusData.find((opt) => {
+          return opt.text == this.data.WorkStatus;
+        }).value;
+      }
+      dataToSubmit.PersonalTaxCode = this.data.PersonalTaxCode;
+      dataToSubmit.Salary = parseFloat(this.data.Salary);
+      if (this.editMode == "post") {
+        console.log(JSON.stringify(dataToSubmit));
+        EmployeeApi.add(JSON.stringify(dataToSubmit)).then(response => {
+          alert(response);
+          EventBus.$emit("closeForm");
+        });
+      } else if (this.editMode == "put") {
+        EmployeeApi.update(JSON.stringify(dataToSubmit));
       }
     });
   },
@@ -320,7 +396,7 @@ export default {
           this.data.PositionName = newValue;
           break;
         case "department-form":
-          this.data.DepartmentCode = newValue;
+          this.data.DepartmentName = newValue;
           break;
         case "personal-tax-code":
           this.data.PersonalTaxCode = newValue;
@@ -343,12 +419,20 @@ export default {
       .then((response) => {
         this.newEmployeeCode = response.data.toString();
       });
-    axios.get("http://cukcuk.manhnv.net/v1/Positions").then((response) => {
+    PositionApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let pos = {};
         pos.text = e.PositionName;
-        pos.value = e.PositionCode;
+        pos.value = e.PositionId;
         this.positionData.push(pos);
+      });
+    });
+    DepartmentApi.getAll().then((response) => {
+      response.data.forEach((e) => {
+        let dep = {};
+        dep.text = e.DepartmentName;
+        dep.value = e.DepartmentId;
+        this.departmentData.push(dep);
       });
     });
   },
