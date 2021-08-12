@@ -25,6 +25,7 @@ export default {
     content: String,
   },
   methods: {
+    // Khi có thay đổi trong input
     onInput(event) {
       this.$emit("changeValue", this.id, event.target.value);
     },

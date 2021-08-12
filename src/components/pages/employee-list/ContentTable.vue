@@ -1,9 +1,16 @@
 <template>
-  <div class="table-container" @selectionChanged="selectedId = $event">
+  <div class="table-container">
     <LoadingSpinner v-show="isLoading"></LoadingSpinner>
     <table class="my-table">
       <thead>
         <tr>
+          <th>
+            <input
+              type="checkbox"
+              @click="toggleSelectAll"
+              v-model="selectAll"
+            />
+          </th>
           <th>Mã nhân viên</th>
           <th>Họ và tên</th>
           <th>Giới tính</th>
@@ -20,10 +27,13 @@
         <tr
           v-for="employee in employees"
           :key="employee.EmployeeId"
-          @click="getSelectedRow(employee.EmployeeId)"
+          @click="getSelectedRow(employee)"
           @dblclick="showEmployeeDetail(employee.EmployeeId)"
-          :class="{ 'tr-active': employee.EmployeeId == selectedId }"
+          :class="{ 'tr-active': employee.checked }"
         >
+          <td>
+            <input type="checkbox" v-model="employee.checked" />
+          </td>
           <td>{{ employee.EmployeeCode }}</td>
           <td>{{ employee.FullName }}</td>
           <td>{{ employee.GenderName }}</td>
@@ -33,7 +43,7 @@
           <td>{{ employee.PositionName }}</td>
           <td>{{ employee.DepartmentName }}</td>
           <td>{{ employee.Salary }}</td>
-          <td>{{ employee.WorkStatus }}</td>
+          <td>{{ employee.WorkStatusName }}</td>
         </tr>
       </tbody>
     </table>
@@ -43,41 +53,19 @@
 import dayjs from "dayjs";
 import LoadingSpinner from "../../common/LoadingSpinner.vue";
 import { EventBus } from "@/js/EventBus.js";
-import EmployeeApi from "../../../api/EmployeeApi"
-import PositionApi from "../../../api/PositionApi"
-import DepartmentApi from "../../../api/DepartmentApi"
+import EmployeeApi from "../../../api/EmployeeApi";
+import PositionApi from "../../../api/PositionApi";
+import DepartmentApi from "../../../api/DepartmentApi";
 
 export default {
   name: "ContentTable",
   props: {},
+  computed: {},
   created() {
-    this.isLoading = true;
-    EmployeeApi.getAll().then((response) => {
-      response.data.forEach((value) => {
-        value.DateOfBirth = dayjs(value.DateOfBirth).format("DD-MM-YYYY");
-        if (value.DateOfBirth == "Invalid Date") {
-          value.DateOfBirth = "Không xác định";
-        }
-        value.joinDate = dayjs(value.joinDate).format("DD-MM-YYYY");
-        if (value.joinDate == "Invalid Date") {
-          value.joinDate = "Không xác định";
-        }
-        if (value.Salary != null)
-          value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
-        if (value.PositionId != null) {
-          value.PositionName = this.positionData.find((opt) => {
-            return opt.value == value.PositionId;
-          }).text;
-        }
-        if (value.DepartmentId != null) {
-          value.DepartmentName = this.departmentData.find((opt) => {
-            return opt.value == value.DepartmentId;
-          }).text;
-          this.employees.push(value);
-        }
-      });
-      this.isLoading = false;
-    });
+    // Lấy danh sách nhân viên
+    this.getAllEmployee();
+
+    // Lấy danh sách vị trí
     PositionApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let pos = {};
@@ -86,6 +74,8 @@ export default {
         this.positionData.push(pos);
       });
     });
+
+    // Lấy danh sách phòng ban
     DepartmentApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let dep = {};
@@ -96,12 +86,80 @@ export default {
     });
   },
   methods: {
-    getSelectedRow(employeeId) {
-      this.selectedId = this.selectedId == employeeId ? "" : employeeId;
-    },
+    // Dòng đang được click vào
+    // getSelectedRow(employeeId) {
+    //   if (!this.selectedIds.has(employeeId)) {
+    //     this.selectedIds.add(employeeId);
+    //   }
+    //   else {
+    //     this.selectedIds.delete(employeeId);
+    //   }
+    // },
+
+    // Mở form chi tiết thông tin nhân viên
     showEmployeeDetail(employeeId) {
-      this.selectedId = employeeId;
       EventBus.$emit("showForm", employeeId);
+    },
+
+    // Lấy danh sách nhân viên
+    getAllEmployee() {
+      this.isLoading = true;
+      EmployeeApi.getAll().then((response) => {
+        this.employees = [];
+        response.data.forEach((value) => {
+          value.DateOfBirth = dayjs(value.DateOfBirth).format("DD-MM-YYYY");
+          if (value.DateOfBirth == "Invalid Date") {
+            value.DateOfBirth = "Không xác định";
+          }
+          value.joinDate = dayjs(value.joinDate).format("DD-MM-YYYY");
+          if (value.joinDate == "Invalid Date") {
+            value.joinDate = "Không xác định";
+          }
+          if (value.Salary != null)
+            value.Salary = value.Salary.toLocaleString().replaceAll(",", ".");
+          if (value.PositionId != null) {
+            value.PositionName = this.positionData.find((opt) => {
+              return opt.value == value.PositionId;
+            }).text;
+          }
+          if (value.DepartmentId != null) {
+            value.DepartmentName = this.departmentData.find((opt) => {
+              return opt.value == value.DepartmentId;
+            }).text;
+          }
+          if (value.WorkStatus != null) {
+            value.WorkStatusName = this.workStatusData.find((opt) => {
+              return opt.value == value.WorkStatus;
+            }).text;
+          } else {
+            value.WorkStatusName = "";
+          }
+          if (value.Gender != null) {
+            value.GenderName = this.genderData.find((opt) => {
+              return opt.value == value.Gender;
+            }).text;
+          } else {
+            value.GenderName = "";
+          }
+          value.checked = false;
+          this.employees.push(value);
+        });
+        this.isLoading = false;
+      });
+    },
+
+    toggleSelectAll() {
+      this.selectAll = !this.selectAll;
+      this.employees.forEach((e) => {
+        e.checked = this.selectAll;
+      });
+    },
+
+    getSelectedRow(employee) {
+      employee.checked = !employee.checked;
+      this.selectAll = this.employees.every((e) => {
+        return e.checked;
+      });
     },
   },
   data() {
@@ -109,9 +167,40 @@ export default {
       employees: [],
       positionData: [],
       departmentData: [],
-      selectedId: String,
+      workStatusData: [
+        { text: "Đang làm", value: 0 },
+        { text: "Thực tập", value: 1 },
+        { text: "Đang nghỉ phép", value: 2 },
+        { text: "Đã nghỉ", value: 3 },
+        { text: "Khác", value: 4 },
+      ],
+      genderData: [
+        { text: "Nữ", value: 0 },
+        { text: "Nam", value: 1 },
+        { text: "Khác", value: 2 },
+      ],
       isLoading: true,
+      selectAll: false,
     };
+  },
+  mounted() {
+    EventBus.$on("deleteEmployee", () => {
+      let rowsDeleted = 0;
+      var selectedEmployees = this.employees.filter((e) => e.checked);
+      selectedEmployees.forEach(e => {
+        EmployeeApi.delete(e.EmployeeId).then((response) => {
+          if (response.status == 200) {
+            rowsDeleted++;
+          } else {
+            alert(response.userMsg);
+            return;
+          }
+        })
+      })
+      alert("Đã xóa " + rowsDeleted + " bản ghi!");
+      this.getAllEmployee();
+      EventBus.$emit("closeForm");
+    });
   },
   components: {
     LoadingSpinner,

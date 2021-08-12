@@ -7,7 +7,7 @@
       :class="{ 'border-red': !isValidate, 'border-green': isFocus }"
     >
       <input
-        v-tooltip="{trigger: 'manual', content: 'Trường này không được phép để trống', show: !isValidate}"
+        v-tooltip.top="!isValidate && tooltipContent"
         :id="id"
         ref="inputField"
         class="info-uniform combobox-input"
@@ -59,28 +59,49 @@ export default {
   name: "AutoComplete",
   data() {
     return {
+      // Trạng thái đóng/mở của combobox
       open: false,
+
+      // Index của option hiện tại
       current: -1,
+
+      // Dữ liệu trong input có hợp lệ không
       isValidate: true,
+
+      // Khi combobox được focus
       isFocus: false,
+
+      // Trạng thái show tất cả option (Khi bấm vào nút mũi tên)
       showAll: false,
+
+      // Option đang được lựa chọn
       selected: "",
+
+      // Option đang được hover (Khi di chuyển giữa các option bằng phím mũi tên)
       hovered: "",
+
+      // Tooltip
+      tooltipContent: "",
     };
   },
   props: {
+    // Nội dung option truyền vào
     content: {
       type: String,
       required: true,
     },
+
+    // Danh sách option
     options: {
       type: Array,
       required: true,
     },
+
     id: String,
     inputLabel: String,
   },
   computed: {
+    // Các option khớp với dữ liệu trong ô input
     matches() {
       if (!this.showAll) {
         return this.options.filter((obj) => {
@@ -98,11 +119,14 @@ export default {
         return this.options;
       }
     },
+
+    // Mở danh sách option
     openOptions() {
       return this.matches.length !== 0 && this.open === true;
     },
   },
   methods: {
+    // Cập nhật danh sách option (Khi có sự thay đổi trong ô input)
     updateValue(text) {
       this.showAll = false;
       this.isFocus = true;
@@ -120,16 +144,22 @@ export default {
       }
       this.$emit("changeValue", this.id, text);
     },
+
+    // Khi combobox bị blur
     onBlur() {
       if (this.content == "") {
         this.isValidate = true;
-      } else if (!this.options.some((e) => e.text.localeCompare(this.content))) {
+      } else if (
+        !this.options.some((e) => e.text.localeCompare(this.content))
+      ) {
         this.isValidate = false;
       }
       this.isFocus = false;
       this.open = false;
       this.showAll = false;
     },
+
+    // Khi nhấn enter
     enter() {
       this.$emit("input", this.matches[this.current].text);
       this.selected = this.matches[this.current].text;
@@ -138,6 +168,8 @@ export default {
       this.hovered = "";
       this.$emit("changeValue", this.id, this.selected);
     },
+
+    // Khi điều hướng bằng các phím mũi tên
     up() {
       if (this.current > 0) {
         this.current--;
@@ -156,12 +188,18 @@ export default {
         this.hovered = this.matches[this.current].text;
       }
     },
+
+    // Một option được hover
     isHover(text) {
       return text == this.hovered;
     },
+
+    // Một option được chọn (active)
     isActive(text) {
       return text == this.selected;
     },
+
+    // Khi click vào option
     onOptionClicked(index) {
       this.$emit("input", this.matches[index].text);
       this.selected = this.matches[index].text;
@@ -171,6 +209,8 @@ export default {
       this.hovered = "";
       this.$emit("changeValue", this.id, this.selected);
     },
+
+    // Mở tất cả option
     showAllOptions() {
       this.showAll = true;
       this.open = true;
@@ -193,6 +233,26 @@ export default {
     content: function (newVal) {
       this.selected = newVal;
     },
+    isValidate: function() {
+      if (this.id == "gender") {
+        this.tooltipContent = "Thông tin giới tính không hợp lệ";
+      }
+      else if (this.id == "position-form") {
+        this.tooltipContent = "Thông tin chức vụ không hợp lệ";
+      }
+      else if (this.id == "department-form") {
+        this.tooltipContent = "Thông tin phòng ban không hợp lệ";
+      }
+      else if (this.id == "work-status") {
+        this.tooltipContent = "Thông tin tình trạng công việc không hợp lệ";
+      }
+      else if (this.id == "position-page") {
+        this.tooltipContent = "Thông tin chức vụ không hợp lệ";
+      }
+      else if (this.id == "department-page") {
+        this.tooltipContent = "Thông tin phòng ban không hợp lệ";
+      }
+    }
   },
 };
 </script>

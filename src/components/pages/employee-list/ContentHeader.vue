@@ -1,7 +1,7 @@
 <template>
   <div class="content-item content-header">
     <div class="content-item-left">
-      <div class="table-name" v-tooltip.top-center="{content: 'Trường này không được phép để trống'}">Danh sách nhân viên</div>
+      <div class="table-name">Danh sách nhân viên</div>
     </div>
     <div class="content-item-right">
       <IconButton icon="add.png" text="Thêm nhân viên" @click.native="showForm()" />

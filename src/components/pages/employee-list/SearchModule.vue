@@ -24,7 +24,7 @@
       ></AutoComplete>
     </div>
     <div class="content-item-right">
-      <div class="button-delete" id="button-delete">
+      <div class="button-delete" id="button-delete" @click="deleteEmployee">
         <font-awesome-icon icon="trash-alt" />
       </div>
       <div class="button-refresh" id="button-refresh">
@@ -37,6 +37,7 @@
 import AutoComplete from "../../common/AutoComplete.vue";
 import PositionApi from "../../../api/PositionApi";
 import DepartmentApi from "../../../api/DepartmentApi";
+import { EventBus } from '../../../js/EventBus';
 
 export default {
   name: "SearchModule",
@@ -62,8 +63,12 @@ export default {
         this.data.DepartmentCode = newValue;
       }
     },
+    deleteEmployee() {
+      EventBus.$emit("deleteEmployee");
+    }
   },
   created() {
+    // Lấy danh sách tất cả vị trí
     PositionApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let pos = {};
@@ -72,6 +77,8 @@ export default {
         this.positionData.push(pos);
       });
     });
+
+    // Lấy danh sách tất cả phòng ban
     DepartmentApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let dep = {};

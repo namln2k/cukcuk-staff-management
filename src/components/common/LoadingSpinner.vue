@@ -1,3 +1,4 @@
+<!--Icon loading (animated)-->
 <template>
   <div
     class="loading-screen"

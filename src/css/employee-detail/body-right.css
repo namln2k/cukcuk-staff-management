@@ -34,4 +34,5 @@
 .info-field-part {
     width: calc(50% - 12px);
     margin-right: 12px;
+    position: relative;
 }

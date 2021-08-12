@@ -125,7 +125,13 @@
           inputLabel="Mức lương cơ bản"
           :content="data.Salary"
           @changeValue="changeValue"
-        ></TextInput>
+        >
+        </TextInput>
+        <div
+          style="position: absolute; right: 10px; top: 30px; font-style: italic"
+        >
+          (VNĐ)
+        </div>
       </div>
     </div>
     <div class="info-field">
@@ -206,8 +212,11 @@ export default {
     };
   },
   mounted() {
+    // Khi nhận được sự kiện showForm
     EventBus.$on("showForm", (employeeId) => {
       if (employeeId == "" || !employeeId) {
+        // Nếu truyền vào employeeId là null hoặc ""
+        // Thì là thêm mới nhân viên
         this.editMode = "post";
         this.data.EmployeeCode = this.newEmployeeCode;
         this.data.FullName = "";
@@ -225,6 +234,7 @@ export default {
         this.data.JoinDate = "";
         this.data.WorkStatus = "";
       } else {
+        // Nếu không thì là sửa đổi thông tin nhân viên
         this.editMode = "put";
         EmployeeApi.getById(employeeId).then((response) => {
           var e = response.data;
@@ -291,7 +301,10 @@ export default {
         });
       }
     });
+
+    // Khi nhận được sự kiện saveForm
     EventBus.$on("saveForm", () => {
+      // Lấy data
       let dataToSubmit = {};
       dataToSubmit.EmployeeCode = this.data.EmployeeCode;
       dataToSubmit.FullName = this.data.FullName;
@@ -350,14 +363,29 @@ export default {
       }
       dataToSubmit.PersonalTaxCode = this.data.PersonalTaxCode;
       dataToSubmit.Salary = parseFloat(this.data.Salary);
+
       if (this.editMode == "post") {
-        console.log(JSON.stringify(dataToSubmit));
-        EmployeeApi.add(JSON.stringify(dataToSubmit)).then(response => {
-          alert(response);
+        // Nếu là thêm mới nhân viên
+        EmployeeApi.add(JSON.stringify(dataToSubmit)).then((response) => {
+          if (response.status == 200) {
+            alert("Đã thêm " + response.data + " bản ghi");
+          } else {
+            alert(response.userMsg);
+          }
           EventBus.$emit("closeForm");
         });
       } else if (this.editMode == "put") {
-        EmployeeApi.update(JSON.stringify(dataToSubmit));
+        // Bổ sung thêm nội dung EmployeeId cho request
+        // (Khác với tác vụ thêm nhân viên)
+        dataToSubmit.EmployeeId = this.data.EmployeeId;
+
+        console.log(JSON.stringify(dataToSubmit));
+
+        // Nếu là sửa đổi thông tin nhân viên
+        EmployeeApi.update(JSON.stringify(dataToSubmit)).then((response) => {
+          console.log(response);
+          EventBus.$emit("closeForm");
+        });
       }
     });
   },
@@ -419,6 +447,8 @@ export default {
       .then((response) => {
         this.newEmployeeCode = response.data.toString();
       });
+
+    // Lấy danh sách tất cả vị trí
     PositionApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let pos = {};
@@ -427,6 +457,8 @@ export default {
         this.positionData.push(pos);
       });
     });
+
+    // Lấy danh sách tất cả phòng ban
     DepartmentApi.getAll().then((response) => {
       response.data.forEach((e) => {
         let dep = {};
